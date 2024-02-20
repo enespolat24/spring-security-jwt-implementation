@@ -1,32 +1,30 @@
 package org.enesp.authservice.controller;
 
 import org.enesp.authservice.model.AuthUser;
-import org.enesp.authservice.util.JwtUtil;
+import org.enesp.authservice.service.JwtService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import org.enesp.authservice.repository.UserRepository;
-
-import java.util.List;
+import org.enesp.authservice.repository.AuthUserRepository;
 
 @RestController
 @RequestMapping("/api/v1/authenticate")
 public class UserController {
 
-    private final UserRepository userRepository;
+    private final AuthUserRepository authUserRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtUtil jwtUtil;
+    private final JwtService jwtService;
 
-    public UserController(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
-        this.userRepository = userRepository;
+    public UserController(AuthUserRepository authUserRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
+        this.authUserRepository = authUserRepository;
         this.passwordEncoder = passwordEncoder;
-        this.jwtUtil = jwtUtil;
+        this.jwtService = jwtService;
     }
 
     @PostMapping("/register")
     public String createUser(@RequestBody AuthUser user) {
-        if (userRepository.findByEmail(user.getEmail()) != null){
+        if (authUserRepository.findByEmail(user.getEmail()) != null){
             throw new RuntimeException("email already in use");
-        } else if (userRepository.findByUsername(user.getUsername()) != null) {
+        } else if (authUserRepository.findByUsername(user.getUsername()) != null) {
             throw new RuntimeException("username already in use");
         }
 
@@ -34,19 +32,19 @@ public class UserController {
         AuthUser.setUsername(user.getUsername());
         AuthUser.setEmail(user.getEmail());
         AuthUser.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(AuthUser);
-        String token = JwtUtil.generateToken(AuthUser.getUsername());
+        authUserRepository.save(AuthUser);
+        String token = JwtService.generateToken(AuthUser.getUsername());
         return "{ \"message\": \"User created successfully\", \"token\": \"" + token + "\" }";
     }
 
     @PostMapping("/login")
     public String login(@RequestBody AuthUser user) {
-        var AuthUser = userRepository.findByUsername(user.getUsername());
+        var AuthUser = authUserRepository.findByUsername(user.getUsername());
         if (AuthUser == null) {
             return "username or password is invalid";
         } else if (!passwordEncoder.matches(user.getPassword(), AuthUser.getPassword())) {
             return "username or password is invalid";
         }
-        return JwtUtil.generateToken(AuthUser.getUsername());
+        return JwtService.generateToken(AuthUser.getUsername());
     }
 }

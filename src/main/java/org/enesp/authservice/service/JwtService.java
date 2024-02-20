@@ -1,4 +1,4 @@
-package org.enesp.authservice.util;
+package org.enesp.authservice.service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Date;
 
 @Service
-public class JwtUtil {
+public class JwtService {
     private static String SECRET;
 
     private static long EXPIRATION;

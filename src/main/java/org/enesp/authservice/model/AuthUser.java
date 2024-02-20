@@ -5,8 +5,7 @@ import jakarta.persistence.*;
 import java.util.Collection;
 
 @Entity
-@Table(name = "AuthUser")
-public class User {
+public class AuthUser {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -15,8 +14,8 @@ public class User {
     private String password;
     @ManyToMany()
     @JoinTable(
-            name = "user_role",
-            joinColumns = @JoinColumn(name = "user_id"),
+            name = "auth_user_role",
+            joinColumns = @JoinColumn(name = "auth_user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Collection<Role> roles;

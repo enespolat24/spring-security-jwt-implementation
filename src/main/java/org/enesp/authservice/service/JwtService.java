@@ -10,6 +10,7 @@ import java.sql.Date;
 
 @Service
 public class JwtService {
+    // :TODO: Implement refresh token
     private static String SECRET;
 
     private static long EXPIRATION;
@@ -24,7 +25,7 @@ public class JwtService {
         EXPIRATION = expiration;
     }
 
-    public static String generateToken(String username) {
+    public String generateToken(String username) {
         return Jwts.builder()
                 .setSubject(username)
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
@@ -32,7 +33,7 @@ public class JwtService {
                 .compact();
     }
 
-    public static Claims validateToken(String token) {
+    public Claims validateToken(String token) {
         return Jwts.parser().setSigningKey(SECRET).build().parseSignedClaims(token).getPayload();
     }
 

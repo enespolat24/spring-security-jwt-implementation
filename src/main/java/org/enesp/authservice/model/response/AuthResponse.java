@@ -1,4 +1,4 @@
-package org.enesp.authservice.model;
+package org.enesp.authservice.model.response;
 
 public record AuthResponse(int StatusCode, String Message, String Token, String RefreshToken) {
     public AuthResponse {

@@ -20,6 +20,15 @@ public class AuthUser {
     )
     private Collection<Role> roles;
 
+    public AuthUser(String username, String password, String email) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+    }
+
+    public AuthUser() {
+    }
+
     public String getUsername() {
         return username;
     }

@@ -16,8 +16,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfig extends AbstractSecurityWebApplicationInitializer {
     @Bean
     public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
-        http
-                .securityMatcher("/users/**");
+        http.securityMatcher("/users/**");
         return http.build();
     }
 

@@ -1,5 +1,6 @@
 package org.enesp.authservice.controller;
 
+import org.enesp.authservice.model.AuthResponse;
 import org.enesp.authservice.model.AuthUser;
 import org.enesp.authservice.service.JwtService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,7 +22,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public String createUser(@RequestBody AuthUser user) {
+    public AuthResponse createUser(@RequestBody AuthUser user) {
         if (authUserRepository.findByEmail(user.getEmail()) != null){
             throw new RuntimeException("email already in use");
         } else if (authUserRepository.findByUsername(user.getUsername()) != null) {
@@ -34,17 +35,17 @@ public class UserController {
         AuthUser.setPassword(passwordEncoder.encode(user.getPassword()));
         authUserRepository.save(AuthUser);
         String token = JwtService.generateToken(AuthUser.getUsername());
-        return "{ \"message\": \"User created successfully\", \"token\": \"" + token + "\" }";
+        return new AuthResponse(200, "User created successfully", token, null);
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody AuthUser user) {
+    public AuthResponse login(@RequestBody AuthUser user) {
         var AuthUser = authUserRepository.findByUsername(user.getUsername());
         if (AuthUser == null) {
-            return "username or password is invalid";
+            return new AuthResponse(401, "username or password is invalid", null, null);
         } else if (!passwordEncoder.matches(user.getPassword(), AuthUser.getPassword())) {
-            return "username or password is invalid";
+            return new AuthResponse(401, "username or password is invalid", null, null);
         }
-        return JwtService.generateToken(AuthUser.getUsername());
+        return new AuthResponse(200, "Login successful", jwtService.generateToken(AuthUser.getUsername()), null);
     }
 }

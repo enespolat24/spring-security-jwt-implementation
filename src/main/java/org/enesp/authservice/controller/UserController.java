@@ -27,24 +27,24 @@ public class UserController {
     @PostMapping("/register")
     public AuthResponse createUser(@RequestBody AuthUser user) {
         if (authUserService.isUsernameInUse(user.getUsername())) {
-            return new AuthResponse(400, "username already in use", null, null);
+            return new AuthResponse(400, "username already in use", null);
         } else if (authUserService.isEmailInUse(user.getEmail())) {
-            return new AuthResponse(400, "email already in use", null, null);
+            return new AuthResponse(400, "email already in use", null);
         }
         AuthUserDTO userDto = new AuthUserDTO(user);
         if (authUserService.createUser(userDto) != null) {
-            return new AuthResponse(200, "User created successfully", jwtService.generateToken(user.getUsername()), null);
+            return new AuthResponse(200, "User created successfully", jwtService.generateToken(user.getUsername()));
         }
-        return new AuthResponse(500, "Internal server error", null, null);
+        return new AuthResponse(500, "Internal server error", null);
     }
 
     @PostMapping("/login")
     public AuthResponse login(@RequestBody AuthUser user) {
         AuthUserDTO existingUser = authUserService.getUser(user.getUsername());
         if (existingUser != null && passwordEncoder.matches(user.getPassword(), existingUser.password())) {
-            return new AuthResponse(200, "Login successful", jwtService.generateToken(existingUser.username()), null);
+            return new AuthResponse(200, "Login successful", jwtService.generateToken(existingUser.username()));
         } else {
-            return new AuthResponse(401, "username or password is invalid", null, null);
+            return new AuthResponse(401, "username or password is invalid", null);
         }
     }
 }

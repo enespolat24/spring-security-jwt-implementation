@@ -27,6 +27,10 @@ public record AuthUserDTO(String username, String password, String email, Option
         this(user.getUsername(), user.getPassword(), user.getEmail(), Optional.of(token), Optional.of(refreshToken));
     }
 
+    public AuthUserDTO(String username, String password, String email) {
+        this(username, password, email, Optional.empty(), Optional.empty());
+    }
+
 
     public AuthUser toEntity() {
         return new AuthUser(username, password, email);

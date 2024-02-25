@@ -33,6 +33,10 @@ public class JwtService {
                 .compact();
     }
 
+    public String getUsernameFromToken(String token) {
+        return Jwts.parser().setSigningKey(SECRET).build().parseClaimsJws(token).getBody().getSubject();
+    }
+
     public Claims validateToken(String token) {
         return Jwts.parser().setSigningKey(SECRET).build().parseSignedClaims(token).getPayload();
     }
